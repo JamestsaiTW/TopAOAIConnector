@@ -2,7 +2,7 @@
 # 這個 .gitignore 檔案由 Microsoft(R) Visual Studio 自動建立。
 ################################################################################
 
-/TopAOAIConnector/bin/Debug/net8.0
+/TopAOAIConnector/bin
 /TopAOAIConnector/obj
 /TopAOAIConnector/TopAOAIConnector.csproj.user
 /.vs
