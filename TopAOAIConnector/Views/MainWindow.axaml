@@ -27,7 +27,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type vm:ListItemTemplate}">
                             <StackPanel Orientation="Horizontal" Spacing="14">
-                                <TextBlock Text="{Binding Title}" />
+                                <TextBlock Text="{Binding Name}" />
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -35,9 +35,9 @@
             </StackPanel>
         </SplitView.Pane>
         <SplitView.Content>
-			<Border CornerRadius="10" Background="#2d2d2d">
-				<TransitioningContentControl Content="{Binding CurrentPage}" />
-			</Border>
+            <Border Background="#2d2d2d" CornerRadius="10">
+                <TransitioningContentControl Content="{Binding CurrentPage}" />
+            </Border>
         </SplitView.Content>
     </SplitView>
 </Window>

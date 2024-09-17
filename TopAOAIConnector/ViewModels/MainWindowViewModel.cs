@@ -45,6 +45,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
 public class ListItemTemplate(Type modelType)
 {
-    public string Title { get; } = modelType.Name.Replace("PageViewModel", "");
+    public string Name { get; } = modelType.Name.Replace("PageViewModel", "");
     public Type ModelType { get; } = modelType;
 }
