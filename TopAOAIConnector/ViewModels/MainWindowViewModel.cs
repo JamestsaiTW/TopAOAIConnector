@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Collections;
+using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
@@ -12,15 +14,15 @@ public partial class MainWindowViewModel : ViewModelBase
 #pragma warning restore CA1822 // Mark members as static
 
     [ObservableProperty]
-    private ViewModelBase? _currentPage = new ChatPageViewModel();
+    private UserControl? _currentPage = new ChatPageView();
 
     [ObservableProperty]
     private ListItemTemplate? _selectedListItem;
 
     public ObservableCollection<ListItemTemplate> Items { get; } =
     [
-        new ListItemTemplate(typeof(ChatPageViewModel)),
-        new ListItemTemplate(typeof(SettingPageViewModel))
+        new ListItemTemplate(typeof(ChatPageView), typeof(ChatPageViewModel)),
+        new ListItemTemplate(typeof(SettingPageView), typeof(SettingPageViewModel))
     ];
 
     partial void OnSelectedListItemChanged(ListItemTemplate? value)
@@ -28,9 +30,12 @@ public partial class MainWindowViewModel : ViewModelBase
         if (value is null)
             return;
 
-        var instance = Activator.CreateInstance(value.ModelType);
-        if (instance is not null && instance is ViewModelBase currentPageViewModel)
-            CurrentPage = currentPageViewModel;
+        var instance = Activator.CreateInstance(value.PageViewType);
+        if (instance is not null && instance is UserControl currentPageView)
+        {
+            currentPageView.DataContext = Activator.CreateInstance(value.PaggViewModelType);
+            CurrentPage = currentPageView;
+        }
     }
 
     [ObservableProperty]
@@ -43,8 +48,9 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 }
 
-public class ListItemTemplate(Type modelType)
+public class ListItemTemplate(Type pageViewType, Type pageViewModelType)
 {
-    public string Name { get; } = modelType.Name.Replace("PageViewModel", "");
-    public Type ModelType { get; } = modelType;
+    public string Name { get; } = pageViewType.Name.Replace("PageView", "");
+    public Type PageViewType { get; } = pageViewType;
+    public Type PaggViewModelType { get; } = pageViewModelType;
 }
