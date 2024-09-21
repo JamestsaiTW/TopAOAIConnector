@@ -3,6 +3,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fluenticons="using:FluentIcons.Avalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:TopAOAIConnector.ViewModels"
     Title="TopAOAIConnector"
@@ -11,7 +12,6 @@
     x:DataType="vm:MainWindowViewModel"
     Icon="/Assets/avalonia-logo.ico"
     mc:Ignorable="d">
-
     <Design.DataContext>
         <!--
             This only sets the DataContext for the previewer in an IDE,
@@ -19,14 +19,17 @@
         -->
         <vm:MainWindowViewModel />
     </Design.DataContext>
-    <SplitView CompactPaneLength="50" DisplayMode="CompactInline" IsPaneOpen="{Binding IsPaneOpen}" OpenPaneLength="300">
+    <SplitView CompactPaneLength="54" DisplayMode="CompactInline" IsPaneOpen="{Binding IsPaneOpen}" OpenPaneLength="300">
         <SplitView.Pane>
             <StackPanel Margin="6" Spacing="6">
-                <Button Command="{Binding MenuButtonCommand}">-</Button>
+                <Button Width="38" Command="{Binding MenuButtonCommand}">
+                    <fluenticons:SymbolIcon FontSize="20" IconVariant="Regular" Symbol="Navigation" />
+                </Button>
                 <ListBox ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedListItem}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type vm:ListItemTemplate}">
                             <StackPanel Orientation="Horizontal" Spacing="14">
+                                <fluenticons:SymbolIcon FontSize="20" IconVariant="Regular" Symbol="{Binding Icon}" />
                                 <TextBlock Text="{Binding Name}" />
                             </StackPanel>
                         </DataTemplate>

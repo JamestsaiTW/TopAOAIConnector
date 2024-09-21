@@ -21,8 +21,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public ObservableCollection<ListItemTemplate> Items { get; } =
     [
-        new ListItemTemplate(typeof(ChatPageView), typeof(ChatPageViewModel)),
-        new ListItemTemplate(typeof(SettingPageView), typeof(SettingPageViewModel))
+        new ListItemTemplate("Chat", typeof(ChatPageView), typeof(ChatPageViewModel)),
+        new ListItemTemplate("Settings", typeof(SettingPageView), typeof(SettingPageViewModel))
     ];
 
     partial void OnSelectedListItemChanged(ListItemTemplate? value)
@@ -48,8 +48,9 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 }
 
-public class ListItemTemplate(Type pageViewType, Type pageViewModelType)
+public class ListItemTemplate(string icon, Type pageViewType, Type pageViewModelType)
 {
+    public string Icon { get; } = icon;
     public string Name { get; } = pageViewType.Name.Replace("PageView", "");
     public Type PageViewType { get; } = pageViewType;
     public Type PaggViewModelType { get; } = pageViewModelType;
