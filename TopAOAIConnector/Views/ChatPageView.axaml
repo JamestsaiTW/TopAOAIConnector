@@ -5,13 +5,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:fluenticons="using:FluentIcons.Avalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="using:TopAOAIConnector.ViewModels"
+    xmlns:viewmodels="using:TopAOAIConnector.ViewModels"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    x:DataType="vm:ChatPageViewModel"
+    x:DataType="viewmodels:ChatPageViewModel"
     mc:Ignorable="d">
     <Design.DataContext>
-        <vm:ChatPageViewModel />
+        <viewmodels:ChatPageViewModel />
     </Design.DataContext>
     <Border Margin="10" BorderBrush="DarkGray" BorderThickness="2" CornerRadius="4">
         <Grid Margin="10" RowDefinitions="*, Auto, Auto">

@@ -3,9 +3,46 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fluenticons="using:FluentIcons.Avalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:TopAOAIConnector.Models"
+    xmlns:viewmodels="using:TopAOAIConnector.ViewModels"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    x:DataType="viewmodels:SettingPageViewModel"
     mc:Ignorable="d">
-    Welcome to Avalonia! This is the Setting Page.
+    <Design.DataContext>
+        <viewmodels:SettingPageViewModel />
+    </Design.DataContext>
+    <Border Margin="10" BorderBrush="DarkGray" BorderThickness="2" CornerRadius="4">
+        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*">
+            <TextBlock Margin="6" VerticalAlignment="Center" FontSize="20" Text="Setting for Azure OpenAI Service:" />
+            <StackPanel Grid.Column="1" Margin="6" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button Command="{Binding ClearCommand}">
+                    <StackPanel>
+                        <fluenticons:SymbolIcon FontSize="16" IconVariant="Regular" Symbol="Delete" />
+                        <TextBlock Text="清除" />
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding SaveCommand}">
+                    <StackPanel>
+                        <fluenticons:SymbolIcon FontSize="16" IconVariant="Regular" Symbol="Save" />
+                        <TextBlock Text="儲存" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" Margin="6">
+                <StackPanel x:DataType="models:AOAISettings" DataContext="{Binding Settings}">
+                    <TextBlock Margin="0,6" Text="Endpoint (端點):" />
+                    <TextBox Text="{Binding Endpoint}" Watermark="請輸入 &quot;端點&quot; 資訊..." />
+                    <TextBlock Margin="0,6" Text="Access Key1 (金鑰1):" />
+                    <TextBox PasswordChar="*" Text="{Binding SecretKey1}" Watermark="請輸入 &quot;金鑰1&quot; 資訊..." />
+                    <TextBlock Margin="0,6" Text="Access Key2 (金鑰2):" />
+                    <TextBox PasswordChar="*" Text="{Binding SecretKey2}" Watermark="請輸入 &quot;金鑰2&quot; 資訊..." />
+                    <TextBlock Margin="0,6" Text="Deploy Model Name (部署的名稱):" />
+                    <TextBox Text="{Binding DeployModelName}" Watermark="請輸入 &quot;部署的名稱&quot; 資訊..." />
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Border>
 </UserControl>
