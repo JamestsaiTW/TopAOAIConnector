@@ -3,14 +3,35 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fluenticons="using:FluentIcons.Avalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:TopAOAIConnector.ViewModels"
-    x:DataType="vm:ChatPageViewModel"
-	d:DesignHeight="450"
+    d:DesignHeight="450"
     d:DesignWidth="800"
+    x:DataType="vm:ChatPageViewModel"
     mc:Ignorable="d">
     <Design.DataContext>
         <vm:ChatPageViewModel />
     </Design.DataContext>
-    Welcome to Avalonia! This is the Chat Page.
+    <Border Margin="10" BorderBrush="DarkGray" BorderThickness="2" CornerRadius="4">
+        <Grid Margin="10" RowDefinitions="*, Auto, Auto">
+            <ScrollViewer>
+                <TextBlock Margin="0,4" FontSize="20" Text="{Binding ChatText}" TextWrapping="WrapWithOverflow" />
+            </ScrollViewer>
+            <TextBox
+                Grid.Row="1"
+                Margin="0,4"
+                FontSize="20"
+                Text="{Binding InputText}"
+                Watermark="在這裡輸入聊天的相關文字..." />
+            <StackPanel Grid.Row="2" Margin="0,4" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button Command="{Binding AttachCommand}">
+                    <fluenticons:SymbolIcon FontSize="20" IconVariant="Regular" Symbol="Attach" />
+                </Button>
+                <Button Command="{Binding SendCommand}" IsDefault="True">
+                    <fluenticons:SymbolIcon FontSize="20" IconVariant="Regular" Symbol="Send" />
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Border>
 </UserControl>

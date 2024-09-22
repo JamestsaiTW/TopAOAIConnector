@@ -14,7 +14,7 @@ public partial class MainWindowViewModel : ViewModelBase
 #pragma warning restore CA1822 // Mark members as static
 
     [ObservableProperty]
-    private UserControl? _currentPage = new ChatPageView();
+    private UserControl? _currentPage = new ChatPageView() { DataContext = new ChatPageViewModel()};
 
     [ObservableProperty]
     private ListItemTemplate? _selectedListItem;
