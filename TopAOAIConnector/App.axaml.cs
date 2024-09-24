@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
@@ -26,6 +27,9 @@ public partial class App : Application
             {
                 DataContext = new MainWindowViewModel(),
             };
+
+            var topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
+            Utilities.AttachFileHelper.StorageProvider = topLevel!.StorageProvider;
         }
 
         base.OnFrameworkInitializationCompleted();
