@@ -14,16 +14,12 @@ internal class AoaiServiceHelper
     static readonly string key = AOAISettings.Instance.SecretKey1!;
     static readonly string deployModelName = AOAISettings.Instance.DeployModelName!;
 
-    public static async Task<string> Go(string userMessage)
+    public static async Task<string> Go(List<ChatMessage> chatMessage)
     {
         var azureOpenAIclient = new AzureOpenAIClient(new Uri(endpoint), new AzureKeyCredential(key));
         var chatClient = azureOpenAIclient.GetChatClient(deployModelName);
 
-        var completionChat = await chatClient.CompleteChatAsync(
-            new List<ChatMessage>()
-            {
-                new UserChatMessage(userMessage)
-            });
+        var completionChat = await chatClient.CompleteChatAsync(chatMessage);
 
         var result = $"{completionChat.Value.Role}:{Environment.NewLine}{completionChat.Value.Content[0].Text}";
         return result;

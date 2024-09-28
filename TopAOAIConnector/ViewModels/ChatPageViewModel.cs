@@ -1,15 +1,18 @@
 ﻿using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using OpenAI.Chat;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using TopAOAIConnector.Utilities;
 
 namespace TopAOAIConnector.ViewModels;
 
 internal partial class ChatPageViewModel : ViewModelBase
 {
+    private readonly List<ChatMessage> messages = [];
+
     [ObservableProperty]
     private string _chatText = $"Wellcome to TopAOAIConnector!{Environment.NewLine}";
 
@@ -37,11 +40,19 @@ internal partial class ChatPageViewModel : ViewModelBase
         using var reader = new StreamReader(stream);
         var fileContent = await reader.ReadToEndAsync();
 
+        if (!string.IsNullOrEmpty(fileContent) && messages.Count > 0)
+        {
+            ChatText = $"{Environment.NewLine}{ChatText}{Environment.NewLine}=======Another Attach TextFile======={Environment.NewLine}";
+            messages.Clear();
+        }
+
         var textContent = InputText == string.Empty ? fileContent : $"{InputText}{Environment.NewLine}{fileContent}";
-        
+
         BuildChatText(textContent);
 
-        await BuildAoaiResultToChatText(textContent);
+        messages.Add(textContent);
+
+        await BuildAoaiResultToChatText();
     }
 
     [RelayCommand]
@@ -53,7 +64,9 @@ internal partial class ChatPageViewModel : ViewModelBase
 
         BuildChatText(textContent);
 
-        await BuildAoaiResultToChatText(textContent);
+        messages.Add(textContent);
+
+        await BuildAoaiResultToChatText();
     }
 
     private void BuildChatText(string textContent)
@@ -63,12 +76,14 @@ internal partial class ChatPageViewModel : ViewModelBase
         InputText = string.Empty;
     }
 
-    private async Task BuildAoaiResultToChatText(string userMessage)
+    private async Task BuildAoaiResultToChatText()
     {
-        await AoaiServiceHelper.Go(userMessage).ContinueWith(async task =>
+        var assistantMessage = await Utilities.AoaiServiceHelper.Go(messages).ContinueWith(async task =>
         {
             var result = await task;
             ChatText = $"{ChatText}{Environment.NewLine}{result}{Environment.NewLine}";
+
+            messages.Add(result);
         });
     }
 }
