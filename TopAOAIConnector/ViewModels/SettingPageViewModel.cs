@@ -27,6 +27,11 @@ internal partial class SettingPageViewModel : ViewModelBase
         {
             Settings = new();
         }
+
+        if (Settings is not null)
+        {
+            AOAISettings.Instance = Settings;
+        }
     }
 
     [ObservableProperty]

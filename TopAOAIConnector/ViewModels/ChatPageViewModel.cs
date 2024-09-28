@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using TopAOAIConnector.Utilities;
 
 namespace TopAOAIConnector.ViewModels;
 
@@ -39,14 +40,20 @@ internal partial class ChatPageViewModel : ViewModelBase
         var textContent = InputText == string.Empty ? fileContent : $"{InputText}{Environment.NewLine}{fileContent}";
         
         BuildChatText(textContent);
+
+        await BuildAoaiResultToChatText(textContent);
     }
 
     [RelayCommand]
-    private void Send()
+    private async Task Send()
     {
         System.Diagnostics.Debug.WriteLine("Send...");
 
-        BuildChatText(InputText);
+        var textContent = InputText;
+
+        BuildChatText(textContent);
+
+        await BuildAoaiResultToChatText(textContent);
     }
 
     private void BuildChatText(string textContent)
@@ -54,5 +61,14 @@ internal partial class ChatPageViewModel : ViewModelBase
         ChatText = $"{ChatText}{Environment.NewLine}You:{Environment.NewLine}{textContent}{Environment.NewLine}";
         
         InputText = string.Empty;
+    }
+
+    private async Task BuildAoaiResultToChatText(string userMessage)
+    {
+        await AoaiServiceHelper.Go(userMessage).ContinueWith(async task =>
+        {
+            var result = await task;
+            ChatText = $"{ChatText}{Environment.NewLine}{result}{Environment.NewLine}";
+        });
     }
 }
