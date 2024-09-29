@@ -78,12 +78,14 @@ internal partial class ChatPageViewModel : ViewModelBase
 
     private async Task BuildAoaiResultToChatText()
     {
-        var assistantMessage = await Utilities.AoaiServiceHelper.Go(messages).ContinueWith(async task =>
+        await Utilities.AoaiServiceHelper.Go(messages).ContinueWith(async task =>
         {
-            var result = await task;
-            ChatText = $"{ChatText}{Environment.NewLine}{result}{Environment.NewLine}";
+            var chatCompletion = await task;
+            var textResult = $"{chatCompletion.Role}:{Environment.NewLine}{chatCompletion.Content[0].Text}";
 
-            messages.Add(result);
+            ChatText = $"{ChatText}{Environment.NewLine}{textResult}{Environment.NewLine}";
+
+            messages.Add(ChatMessage.CreateAssistantMessage(chatCompletion.Content[0].Text));
         });
     }
 }
