@@ -11,7 +11,12 @@ namespace TopAOAIConnector.ViewModels;
 
 internal partial class ChatPageViewModel : ViewModelBase
 {
-    private readonly List<ChatMessage> messages = [];
+    private static string systemMessage = "你是一位專業的電影評論員，請根據使用者的輸入評論來做回答。" +
+                                          "僅能回答 \"好\" 或 \"壞\" 並針對使用者輸入的評論給予最多 10 字的反饋。";
+    
+    private static SystemChatMessage systemChatMessage = ChatMessage.CreateSystemMessage(systemMessage);
+    
+    private readonly List<ChatMessage> messages = [systemChatMessage];
 
     [ObservableProperty]
     private string _chatText = $"Wellcome to TopAOAIConnector!{Environment.NewLine}";
@@ -40,10 +45,12 @@ internal partial class ChatPageViewModel : ViewModelBase
         using var reader = new StreamReader(stream);
         var fileContent = await reader.ReadToEndAsync();
 
-        if (!string.IsNullOrEmpty(fileContent) && messages.Count > 0)
+        if (!string.IsNullOrEmpty(fileContent) && messages.Count > 1)
         {
             ChatText = $"{Environment.NewLine}{ChatText}{Environment.NewLine}=======Another Attach TextFile======={Environment.NewLine}";
+            
             messages.Clear();
+            messages.Add(systemChatMessage);
         }
 
         var textContent = InputText == string.Empty ? fileContent : $"{InputText}{Environment.NewLine}{fileContent}";
