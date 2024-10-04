@@ -29,6 +29,11 @@
                         <TextBlock Text="{Binding Path=Key}" />
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
+                <Interaction.Behaviors>
+                    <ValueChangedTriggerBehavior Binding="{Binding SelectedSystemRole}">
+                        <InvokeCommandAction Command="{Binding SelectedCommand}" />
+                    </ValueChangedTriggerBehavior>
+                </Interaction.Behaviors>
             </ComboBox>
             <TextBox
                 Grid.Row="1"

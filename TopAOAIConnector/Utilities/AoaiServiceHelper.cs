@@ -1,10 +1,10 @@
 ﻿using Azure.AI.OpenAI;
-using Azure;
 using OpenAI.Chat;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TopAOAIConnector.Models;
+using System.ClientModel;
 
 namespace TopAOAIConnector.Utilities;
 
@@ -16,7 +16,7 @@ internal class AoaiServiceHelper
 
     public static async Task<ChatCompletion> Go(List<ChatMessage> chatMessage)
     {
-        var azureOpenAIclient = new AzureOpenAIClient(new Uri(endpoint), new AzureKeyCredential(key));
+        var azureOpenAIclient = new AzureOpenAIClient(new Uri(endpoint), new ApiKeyCredential(key));
         var chatClient = azureOpenAIclient.GetChatClient(deployModelName);
 
         var completionChat = await chatClient.CompleteChatAsync(chatMessage);

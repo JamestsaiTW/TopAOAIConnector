@@ -95,6 +95,8 @@ internal partial class ChatPageViewModel : ViewModelBase
 
         messages.Clear();
         messages.Add(ChatMessage.CreateSystemMessage(SelectedSystemRole.Value));
+
+        ChatText = $"Wellcome to TopAOAIConnector!{Environment.NewLine}";
     }
 
     private void BuildChatText(string textContent)
