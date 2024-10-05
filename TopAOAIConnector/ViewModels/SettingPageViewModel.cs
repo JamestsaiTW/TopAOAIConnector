@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -12,8 +13,10 @@ internal partial class SettingPageViewModel : ViewModelBase
 {
     private const string directoryName = "TopAOAIConnector";
     private const string settingsFileName = "settings.json";
+    private const string chatSystemRolesFileName = "chat-system-roles.json";
 
     private readonly string settingsFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), directoryName, settingsFileName);
+    private readonly string chatSystemRolesFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), directoryName, chatSystemRolesFileName);
 
     public SettingPageViewModel()
     {
@@ -32,10 +35,27 @@ internal partial class SettingPageViewModel : ViewModelBase
         {
             AOAISettings.Instance = Settings;
         }
+
+        if (File.Exists(chatSystemRolesFilePath))
+        {
+            var jsonSettings = File.ReadAllText(chatSystemRolesFilePath);
+            var chatSystemRoles = JsonSerializer.Deserialize<ObservableCollection<ChatSystemRole>>(jsonSettings);
+            ChatSystemRoles = chatSystemRoles;
+        }
+
+        ChatSystemRoles ??= [];
+
+        CurrentChatSystemRole = new();
     }
 
     [ObservableProperty]
     private AOAISettings? _settings;
+
+    [ObservableProperty]
+    private ObservableCollection<ChatSystemRole>? _chatSystemRoles;
+
+    [ObservableProperty]
+    private ChatSystemRole? _currentChatSystemRole;
 
     [RelayCommand]
     private void Clear()
@@ -69,5 +89,30 @@ internal partial class SettingPageViewModel : ViewModelBase
 
         var jsonSettings = JsonSerializer.Serialize(Settings);
         await File.WriteAllTextAsync(settingsFilePath, jsonSettings);
+    }
+
+    [RelayCommand]
+    private async Task Add()
+    {
+        System.Diagnostics.Debug.WriteLine($"Add...{chatSystemRolesFilePath}");
+
+        ChatSystemRoles!.Add(CurrentChatSystemRole!);
+
+        var directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), directoryName);
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+
+        var jsonSettings = JsonSerializer.Serialize(ChatSystemRoles);
+        await File.WriteAllTextAsync(chatSystemRolesFilePath, jsonSettings);
+
+        CurrentChatSystemRole = new ();
+    }
+
+    [RelayCommand]
+    private void Delete()
+    {
+        System.Diagnostics.Debug.WriteLine($"Delete...");
     }
 }

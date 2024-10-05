@@ -45,25 +45,28 @@
                 <TextBlock Grid.Row="2" Margin="6,24,6,12" VerticalAlignment="Center" FontSize="20" Text="Setting for Chat System Role:" />
                 <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,6">
 					<TextBlock Margin="0,6" Text="目前已定義的 System Role：" />
-					<ComboBox >
-						<ComboBoxItem Content="Default System Role" />
-						<ComboBoxItem Content="Movie Reviewer Role" />
+					<ComboBox ItemsSource="{Binding ChatSystemRoles}" >
+						<ComboBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Path=Name}" />
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
 					</ComboBox>
-                    <StackPanel Margin="0,10">
+                    <StackPanel Margin="0,10" DataContext="{Binding CurrentChatSystemRole}">
                         <TextBlock Margin="0,6" Text="Name" />
-                        <TextBox Watermark="請輸入 System Role 的名稱。" />
+                        <TextBox Watermark="請輸入 System Role 的名稱。" Text="{Binding Path=Name}"/>
                         <TextBlock Margin="0,6" Text="Prompt" />
-                        <TextBox Watermark="請輸入 System Role 的 Prompt 定義。" />
+                        <TextBox Watermark="請輸入 System Role 的 Prompt 定義。" Text="{Binding Path=Prompt}"/>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Grid.Row="3" Grid.Column="1" Margin="6,24" HorizontalAlignment="Right" VerticalAlignment="Top" Orientation="Horizontal">
-                    <Button>
+                    <Button Command="{Binding DeleteCommand}">
                         <StackPanel>
                             <fluenticons:SymbolIcon FontSize="16" IconVariant="Regular" Symbol="Delete" />
                             <TextBlock Text="刪除" />
                         </StackPanel>
                     </Button>
-                    <Button>
+                    <Button Command="{Binding AddCommand}">
                         <StackPanel>
                             <fluenticons:SymbolIcon FontSize="16" IconVariant="Regular" Symbol="Add" />
                             <TextBlock Text="新增" />
