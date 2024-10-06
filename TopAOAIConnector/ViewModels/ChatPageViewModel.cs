@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
+using TopAOAIConnector.Models;
 
 namespace TopAOAIConnector.ViewModels;
 
@@ -16,19 +17,17 @@ internal partial class ChatPageViewModel : ViewModelBase
 
     public ChatPageViewModel()
     {
-        SelectedSystemRole = SystemRoles[0];
-        messages.Add(ChatMessage.CreateSystemMessage(SelectedSystemRole.Value));
+        if (SystemRoles.Count > 0)
+        {
+            SelectedSystemRole = SystemRoles[0];
+            messages.Add(ChatMessage.CreateSystemMessage(SelectedSystemRole.Prompt));
+        }
     }
 
-    public ObservableCollection<KeyValuePair<string, string>> SystemRoles { get; } =
-    [
-        new ("Default System Role", "你是協助人員尋找資訊的 AI 助理。"),
-        new ("Movie Reviewer Role", "你是一位專業的電影評論員，請根據使用者的輸入評論來做回答。" +
-                                    "僅能回答 \"好\" 或 \"壞\" 並針對使用者輸入的評論給予最多 10 字的反饋。")
-    ];
+    public ObservableCollection<ChatSystemRole> SystemRoles { get; } = ChatSystemRole.InstanceItems;
 
     [ObservableProperty]
-    public KeyValuePair<string, string> _selectedSystemRole;
+    public ChatSystemRole? _selectedSystemRole;
 
     [ObservableProperty]
     private string _chatText = $"Wellcome to TopAOAIConnector!{Environment.NewLine}";
@@ -62,7 +61,7 @@ internal partial class ChatPageViewModel : ViewModelBase
             ChatText = $"{Environment.NewLine}{ChatText}{Environment.NewLine}=======Another Attach TextFile======={Environment.NewLine}";
             
             messages.Clear();
-            messages.Add(ChatMessage.CreateSystemMessage(SelectedSystemRole.Value));
+            messages.Add(ChatMessage.CreateSystemMessage(SelectedSystemRole!.Prompt));
         }
 
         var textContent = InputText == string.Empty ? fileContent : $"{InputText}{Environment.NewLine}{fileContent}";
@@ -94,7 +93,7 @@ internal partial class ChatPageViewModel : ViewModelBase
         System.Diagnostics.Debug.WriteLine("Selected...");
 
         messages.Clear();
-        messages.Add(ChatMessage.CreateSystemMessage(SelectedSystemRole.Value));
+        messages.Add(ChatMessage.CreateSystemMessage(SelectedSystemRole!.Prompt));
 
         ChatText = $"Wellcome to TopAOAIConnector!{Environment.NewLine}";
     }

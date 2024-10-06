@@ -43,7 +43,7 @@ internal partial class SettingPageViewModel : ViewModelBase
             ChatSystemRoles = chatSystemRoles;
         }
 
-        ChatSystemRoles ??= [];
+        ChatSystemRole.InstanceItems = ChatSystemRoles ??= [new() { Name = "Default System Role", Prompt= "你是協助人員尋找資訊的 AI 助理。" }];
 
         CurrentChatSystemRole = new();
     }
