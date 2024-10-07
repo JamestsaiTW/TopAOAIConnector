@@ -30,7 +30,7 @@ internal partial class ChatPageViewModel : ViewModelBase
     public ChatSystemRole? _selectedSystemRole;
 
     [ObservableProperty]
-    private string _chatText = $"Wellcome to TopAOAIConnector!{Environment.NewLine}";
+    private string _chatText = $"Welcome to TopAOAIConnector!{Environment.NewLine}";
 
     [ObservableProperty]
     private string _inputText = string.Empty;
@@ -95,7 +95,7 @@ internal partial class ChatPageViewModel : ViewModelBase
         messages.Clear();
         messages.Add(ChatMessage.CreateSystemMessage(SelectedSystemRole!.Prompt));
 
-        ChatText = $"Wellcome to TopAOAIConnector!{Environment.NewLine}";
+        ChatText = $"Welcome to TopAOAIConnector!{Environment.NewLine}";
     }
 
     private void BuildChatText(string textContent)

@@ -3,7 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using TopAOAIConnector.Models;
 
@@ -40,10 +42,12 @@ internal partial class SettingPageViewModel : ViewModelBase
         {
             var jsonSettings = File.ReadAllText(chatSystemRolesFilePath);
             var chatSystemRoles = JsonSerializer.Deserialize<ObservableCollection<ChatSystemRole>>(jsonSettings);
-            ChatSystemRoles = chatSystemRoles;
+
+            if (chatSystemRoles!.Count > 0)
+                ChatSystemRoles = chatSystemRoles;
         }
 
-        ChatSystemRole.InstanceItems = ChatSystemRoles ??= [new() { Name = "Default System Role", Prompt= "你是協助人員尋找資訊的 AI 助理。" }];
+        ChatSystemRole.InstanceItems = ChatSystemRoles ??= [new() { Name = "Default System Role", Prompt = "你是協助人員尋找資訊的 AI 助理。" }];
 
         CurrentChatSystemRole = new();
     }
@@ -56,6 +60,9 @@ internal partial class SettingPageViewModel : ViewModelBase
 
     [ObservableProperty]
     private ChatSystemRole? _currentChatSystemRole;
+
+    [ObservableProperty]
+    private bool _isEdit;
 
     [RelayCommand]
     private void Clear()
@@ -96,23 +103,60 @@ internal partial class SettingPageViewModel : ViewModelBase
     {
         System.Diagnostics.Debug.WriteLine($"Add...{chatSystemRolesFilePath}");
 
+        if (string.IsNullOrEmpty(CurrentChatSystemRole!.Name) || string.IsNullOrEmpty(CurrentChatSystemRole!.Prompt))
+        {
+            return;
+        }
+
         ChatSystemRoles!.Add(CurrentChatSystemRole!);
 
+        await SaveDataToFile();
+
+        CurrentChatSystemRole = new();
+    }
+
+    [RelayCommand]
+    private async Task Delete()
+    {
+        System.Diagnostics.Debug.WriteLine($"Delete...");
+
+        ChatSystemRoles!.Remove(CurrentChatSystemRole!);
+
+        await SaveDataToFile();
+
+        CurrentChatSystemRole = new();
+    }
+
+    [RelayCommand]
+    private async Task Edit()
+    {
+        System.Diagnostics.Debug.WriteLine($"Edit...{chatSystemRolesFilePath}");
+
+        await SaveDataToFile();
+
+        CurrentChatSystemRole = new();
+
+        IsEdit = false;
+    }
+
+    [RelayCommand]
+    private void Selected()
+    {
+        IsEdit = !IsEdit;
+    }
+
+    private async Task SaveDataToFile()
+    {
         var directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), directoryName);
         if (!Directory.Exists(directoryPath))
         {
             Directory.CreateDirectory(directoryPath);
         }
 
-        var jsonSettings = JsonSerializer.Serialize(ChatSystemRoles);
+        var jsonSettings = JsonSerializer.Serialize(ChatSystemRoles, options: new()
+        {
+            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+        });
         await File.WriteAllTextAsync(chatSystemRolesFilePath, jsonSettings);
-
-        CurrentChatSystemRole = new ();
-    }
-
-    [RelayCommand]
-    private void Delete()
-    {
-        System.Diagnostics.Debug.WriteLine($"Delete...");
     }
 }
