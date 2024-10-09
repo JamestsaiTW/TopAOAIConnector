@@ -1,4 +1,5 @@
-﻿using Avalonia.Platform.Storage;
+﻿using Avalonia.Controls;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OpenAI.Chat;
@@ -70,7 +71,8 @@ internal partial class ChatPageViewModel : ViewModelBase
 
         messages.Add(textContent);
 
-        await BuildAoaiResultToChatText();
+        if (!string.IsNullOrEmpty(InputText))
+            await BuildAoaiResultToChatText();
     }
 
     [RelayCommand]
@@ -96,6 +98,17 @@ internal partial class ChatPageViewModel : ViewModelBase
         messages.Add(ChatMessage.CreateSystemMessage(SelectedSystemRole!.Prompt));
 
         ChatText = $"Welcome to TopAOAIConnector!{Environment.NewLine}";
+    }
+
+    [RelayCommand]
+    private static void Scroll(ContentControl contentControl)
+    {
+        System.Diagnostics.Debug.WriteLine("Scroll...");
+
+        if (contentControl is ScrollViewer scrollViewer)
+        {
+            scrollViewer.ScrollToEnd();
+        }
     }
 
     private void BuildChatText(string textContent)

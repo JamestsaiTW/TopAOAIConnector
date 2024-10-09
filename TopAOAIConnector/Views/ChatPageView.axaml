@@ -15,7 +15,12 @@
     </Design.DataContext>
     <Border Margin="10" BorderBrush="DarkGray" BorderThickness="2" CornerRadius="4">
         <Grid Margin="10" RowDefinitions="*, Auto, Auto">
-            <ScrollViewer>
+            <ScrollViewer Name="mainScorllViewer">
+				<Interaction.Behaviors>
+					<ValueChangedTriggerBehavior Binding="{Binding ChatText}">
+						<InvokeCommandAction Command="{Binding ScrollCommand}" CommandParameter="{Binding #mainScorllViewer}" />
+					</ValueChangedTriggerBehavior>
+				</Interaction.Behaviors>
                 <TextBlock Margin="0,4" FontSize="20" Text="{Binding ChatText}" TextWrapping="WrapWithOverflow" />
             </ScrollViewer>
             <ComboBox
