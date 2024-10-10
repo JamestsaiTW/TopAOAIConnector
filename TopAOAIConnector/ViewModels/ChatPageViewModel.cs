@@ -65,13 +65,15 @@ internal partial class ChatPageViewModel : ViewModelBase
             messages.Add(ChatMessage.CreateSystemMessage(SelectedSystemRole!.Prompt));
         }
 
-        var textContent = InputText == string.Empty ? fileContent : $"{InputText}{Environment.NewLine}{fileContent}";
+        var isInputTextEmpty = string.IsNullOrEmpty(InputText);
 
-        BuildChatText(textContent);
+        var textContent = isInputTextEmpty ? fileContent : $"{InputText}{Environment.NewLine}{fileContent}";
 
         messages.Add(textContent);
 
-        if (!string.IsNullOrEmpty(InputText))
+        BuildChatText(textContent);
+
+        if (!isInputTextEmpty)
             await BuildAoaiResultToChatText();
     }
 
