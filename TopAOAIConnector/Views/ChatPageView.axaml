@@ -21,7 +21,7 @@
 						<InvokeCommandAction Command="{Binding ScrollCommand}" CommandParameter="{Binding #mainScorllViewer}" />
 					</ValueChangedTriggerBehavior>
 				</Interaction.Behaviors>
-                <TextBlock Margin="0,4" FontSize="20" Text="{Binding ChatText}" TextWrapping="WrapWithOverflow" />
+                <SelectableTextBlock Margin="0,4" FontSize="20" Text="{Binding ChatText}" TextWrapping="WrapWithOverflow" />
             </ScrollViewer>
             <ComboBox
                 Margin="4"

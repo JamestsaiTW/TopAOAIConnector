@@ -71,7 +71,16 @@ internal partial class ChatPageViewModel : ViewModelBase
 
         messages.Add(textContent);
 
-        BuildChatText(textContent);
+        if (fileContent.Length > 750)
+        {
+            fileContent = $"{fileContent[..500]}{Environment.NewLine}{Environment.NewLine}" +
+              $"...略...{Environment.NewLine}{Environment.NewLine}" +
+              $"{fileContent[(fileContent.Length - 250)..fileContent.Length]}";
+
+            textContent = isInputTextEmpty ? fileContent : $"{InputText}{Environment.NewLine}{fileContent}";
+        }
+        
+        BuildChatText(textContent);            
 
         if (!isInputTextEmpty)
             await BuildAoaiResultToChatText();
