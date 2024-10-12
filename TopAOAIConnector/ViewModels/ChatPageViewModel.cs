@@ -2,11 +2,13 @@
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentIcons.Avalonia;
 using OpenAI.Chat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using Avalonia.Controls.Documents;
 using System.Threading.Tasks;
 using TopAOAIConnector.Models;
 
@@ -15,6 +17,9 @@ namespace TopAOAIConnector.ViewModels;
 internal partial class ChatPageViewModel : ViewModelBase
 {
     private readonly List<ChatMessage> messages = [];
+
+    private string fileName = string.Empty;
+    private string fileContent = string.Empty;
 
     public ChatPageViewModel()
     {
@@ -55,7 +60,9 @@ internal partial class ChatPageViewModel : ViewModelBase
 
         await using var stream = await resultFiles[0].OpenReadAsync();
         using var reader = new StreamReader(stream);
-        var fileContent = await reader.ReadToEndAsync();
+
+        fileName = resultFiles[0].Name;
+        fileContent = await reader.ReadToEndAsync();
 
         if (!string.IsNullOrEmpty(fileContent) && messages.Count > 1)
         {
@@ -119,6 +126,34 @@ internal partial class ChatPageViewModel : ViewModelBase
         if (contentControl is ScrollViewer scrollViewer)
         {
             scrollViewer.ScrollToEnd();
+        }
+    }
+
+    [RelayCommand]
+    private void BuildInline(Control control)
+    {
+        System.Diagnostics.Debug.WriteLine("BuildInline...");
+
+        if (control is not null && control is SelectableTextBlock selectableTextBlock)
+        {
+            selectableTextBlock.Text = string.Empty;
+            selectableTextBlock.Inlines?.Clear();
+
+            int index = ChatText.IndexOf(fileContent);
+
+            selectableTextBlock.Inlines?.Add(new Run(ChatText[..index]));
+
+            var fileStackPanel = new StackPanel()
+            {
+                Children =
+                {
+                    new SymbolIcon() { FontSize = 60, Symbol = FluentIcons.Common.Symbol.Document, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left},
+                    new TextBlock() { FontSize = 20, Text = fileName }
+                }
+            };
+
+            selectableTextBlock.Inlines?.Add(fileStackPanel);
+            selectableTextBlock.Inlines?.Add(new Run(ChatText[(index + fileContent.Length)..]));
         }
     }
 

@@ -16,12 +16,20 @@
     <Border Margin="10" BorderBrush="DarkGray" BorderThickness="2" CornerRadius="4">
         <Grid Margin="10" RowDefinitions="*, Auto, Auto">
             <ScrollViewer Name="mainScorllViewer">
-				<Interaction.Behaviors>
-					<ValueChangedTriggerBehavior Binding="{Binding ChatText}">
-						<InvokeCommandAction Command="{Binding ScrollCommand}" CommandParameter="{Binding #mainScorllViewer}" />
-					</ValueChangedTriggerBehavior>
-				</Interaction.Behaviors>
-                <SelectableTextBlock Margin="0,4" FontSize="20" Text="{Binding ChatText}" TextWrapping="WrapWithOverflow" />
+                <Interaction.Behaviors>
+                    <ValueChangedTriggerBehavior Binding="{Binding ChatText}">
+                        <InvokeCommandAction Command="{Binding ScrollCommand}" CommandParameter="{Binding #mainScorllViewer}" />
+                    </ValueChangedTriggerBehavior>
+                </Interaction.Behaviors>
+                <SelectableTextBlock Name="mainChatText" Margin="0,4" FontSize="20" TextWrapping="WrapWithOverflow">
+					Welcome to TopAOAIConnector!
+					<LineBreak />
+                    <Interaction.Behaviors>
+                        <ValueChangedTriggerBehavior Binding="{Binding ChatText}">
+                            <InvokeCommandAction Command="{Binding BuildInlineCommand}" CommandParameter="{Binding #mainChatText}" />
+                        </ValueChangedTriggerBehavior>
+                    </Interaction.Behaviors>
+                </SelectableTextBlock>
             </ScrollViewer>
             <ComboBox
                 Margin="4"
