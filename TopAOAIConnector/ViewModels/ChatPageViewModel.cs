@@ -21,6 +21,8 @@ internal partial class ChatPageViewModel : ViewModelBase
     private string fileName = string.Empty;
     private string fileContent = string.Empty;
 
+    private string appandText = string.Empty;
+
     public ChatPageViewModel()
     {
         if (SystemRoles.Count > 0)
@@ -61,16 +63,19 @@ internal partial class ChatPageViewModel : ViewModelBase
         await using var stream = await resultFiles[0].OpenReadAsync();
         using var reader = new StreamReader(stream);
 
-        fileName = resultFiles[0].Name;
         fileContent = await reader.ReadToEndAsync();
 
         if (!string.IsNullOrEmpty(fileContent) && messages.Count > 1)
         {
-            ChatText = $"{Environment.NewLine}{ChatText}{Environment.NewLine}=======Another Attach TextFile======={Environment.NewLine}";
+            appandText = $"{Environment.NewLine}======= Another Attach TextFile =======";
             
+            ChatText = $"{ChatText}{appandText}";
+
             messages.Clear();
             messages.Add(ChatMessage.CreateSystemMessage(SelectedSystemRole!.Prompt));
         }
+
+        fileName = resultFiles[0].Name;
 
         var isInputTextEmpty = string.IsNullOrEmpty(InputText);
 
@@ -86,8 +91,8 @@ internal partial class ChatPageViewModel : ViewModelBase
 
             textContent = isInputTextEmpty ? fileContent : $"{InputText}{Environment.NewLine}{fileContent}";
         }
-        
-        BuildChatText(textContent);            
+
+        BuildChatText(textContent);
 
         if (!isInputTextEmpty)
             await BuildAoaiResultToChatText();
@@ -136,31 +141,39 @@ internal partial class ChatPageViewModel : ViewModelBase
 
         if (control is not null && control is SelectableTextBlock selectableTextBlock)
         {
-            selectableTextBlock.Text = string.Empty;
-            selectableTextBlock.Inlines?.Clear();
-
-            int index = ChatText.IndexOf(fileContent);
-
-            selectableTextBlock.Inlines?.Add(new Run(ChatText[..index]));
-
-            var fileStackPanel = new StackPanel()
+            if (!string.IsNullOrEmpty(fileName))
             {
-                Children =
-                {
-                    new SymbolIcon() { FontSize = 60, Symbol = FluentIcons.Common.Symbol.Document, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left},
-                    new TextBlock() { FontSize = 20, Text = fileName }
-                }
-            };
+                appandText = appandText.Replace(fileContent, string.Empty);
 
-            selectableTextBlock.Inlines?.Add(fileStackPanel);
-            selectableTextBlock.Inlines?.Add(new Run(ChatText[(index + fileContent.Length)..]));
+                selectableTextBlock.Inlines?.Add(new Run(appandText));
+
+                var fileStackPanel = new StackPanel()
+                {
+                    Children =
+                    {
+                        new SymbolIcon() { FontSize = 60, Symbol = FluentIcons.Common.Symbol.Document, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left},
+                        new TextBlock() { FontSize = 20, Text = fileName }
+                    }
+                };
+
+                selectableTextBlock.Inlines?.Add(fileStackPanel);
+                fileName = string.Empty;
+            }
+            else
+            {
+                selectableTextBlock.Inlines?.Add(new Run(appandText));
+            }
+
+            selectableTextBlock.Inlines?.Add(new LineBreak());
+            appandText = string.Empty;
         }
     }
 
     private void BuildChatText(string textContent)
     {
-        ChatText = $"{ChatText}{Environment.NewLine}You:{Environment.NewLine}{textContent}{Environment.NewLine}";
-        
+        appandText = $"{Environment.NewLine}You:{Environment.NewLine}{textContent}";
+        ChatText = $"{ChatText}{appandText}";
+       
         InputText = string.Empty;
     }
 
@@ -169,9 +182,9 @@ internal partial class ChatPageViewModel : ViewModelBase
         await Utilities.AoaiServiceHelper.Go(messages).ContinueWith(async task =>
         {
             var chatCompletion = await task;
-            var textResult = $"{chatCompletion.Role}:{Environment.NewLine}{chatCompletion.Content[0].Text}";
 
-            ChatText = $"{ChatText}{Environment.NewLine}{textResult}{Environment.NewLine}";
+            appandText = $"{Environment.NewLine}{chatCompletion.Role}:{Environment.NewLine}{chatCompletion.Content[0].Text}";
+            ChatText = $"{ChatText}{Environment.NewLine}{appandText}{Environment.NewLine}";
 
             messages.Add(ChatMessage.CreateAssistantMessage(chatCompletion.Content[0].Text));
         });
