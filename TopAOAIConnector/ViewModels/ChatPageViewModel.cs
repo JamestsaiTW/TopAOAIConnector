@@ -22,6 +22,7 @@ internal partial class ChatPageViewModel : ViewModelBase
     private string fileContent = string.Empty;
 
     private string appandText = string.Empty;
+    private string lastFileName = string.Empty;
 
     public ChatPageViewModel()
     {
@@ -65,8 +66,9 @@ internal partial class ChatPageViewModel : ViewModelBase
 
         fileContent = await reader.ReadToEndAsync();
 
-        if (!string.IsNullOrEmpty(fileContent) && messages.Count > 1)
+        if (!string.IsNullOrEmpty(fileContent) && messages.Count > 1 && !string.IsNullOrEmpty(lastFileName))
         {
+            lastFileName = string.Empty;
             appandText = $"{Environment.NewLine}======= Another Attach TextFile =======";
             
             ChatText = $"{ChatText}{appandText}";
@@ -94,7 +96,7 @@ internal partial class ChatPageViewModel : ViewModelBase
 
         BuildChatText(textContent);
 
-        if (!isInputTextEmpty)
+        if (!isInputTextEmpty || messages.Count > 2)
             await BuildAoaiResultToChatText();
     }
 
@@ -113,14 +115,25 @@ internal partial class ChatPageViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void Selected()
+    private void Selected(Control control)
     {
         System.Diagnostics.Debug.WriteLine("Selected...");
 
-        messages.Clear();
-        messages.Add(ChatMessage.CreateSystemMessage(SelectedSystemRole!.Prompt));
+        if (control is not null && control is SelectableTextBlock selectableTextBlock)
+        {
+            messages.Clear();
+            messages.Add(ChatMessage.CreateSystemMessage(SelectedSystemRole!.Prompt));
 
-        ChatText = $"Welcome to TopAOAIConnector!{Environment.NewLine}";
+            InputText = string.Empty;
+
+            fileName = string.Empty;
+            fileContent = string.Empty;
+
+            selectableTextBlock.Inlines?.Clear();
+
+            appandText = $"Welcome to TopAOAIConnector!{Environment.NewLine}";
+            selectableTextBlock.Text = ChatText = appandText;
+        }
     }
 
     [RelayCommand]
@@ -157,6 +170,8 @@ internal partial class ChatPageViewModel : ViewModelBase
                 };
 
                 selectableTextBlock.Inlines?.Add(fileStackPanel);
+
+                lastFileName = fileName;
                 fileName = string.Empty;
             }
             else

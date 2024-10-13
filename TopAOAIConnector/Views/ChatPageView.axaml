@@ -22,8 +22,7 @@
                     </ValueChangedTriggerBehavior>
                 </Interaction.Behaviors>
                 <SelectableTextBlock Name="mainChatText" Margin="0,4" FontSize="20" TextWrapping="WrapWithOverflow">
-					Welcome to TopAOAIConnector!
-					<LineBreak />
+                    Welcome to TopAOAIConnector!<LineBreak />
                     <Interaction.Behaviors>
                         <ValueChangedTriggerBehavior Binding="{Binding ChatText}">
                             <InvokeCommandAction Command="{Binding BuildInlineCommand}" CommandParameter="{Binding #mainChatText}" />
@@ -44,7 +43,7 @@
                 </ComboBox.ItemTemplate>
                 <Interaction.Behaviors>
                     <ValueChangedTriggerBehavior Binding="{Binding SelectedSystemRole}">
-                        <InvokeCommandAction Command="{Binding SelectedCommand}" />
+                        <InvokeCommandAction Command="{Binding SelectedCommand}" CommandParameter="{Binding #mainChatText}" />
                     </ValueChangedTriggerBehavior>
                 </Interaction.Behaviors>
             </ComboBox>
