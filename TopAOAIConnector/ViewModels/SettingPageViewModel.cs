@@ -142,7 +142,7 @@ internal partial class SettingPageViewModel : ViewModelBase
     [RelayCommand]
     private void Selected()
     {
-        IsEdit = !IsEdit;
+        IsEdit = CurrentChatSystemRole is not null;        
     }
 
     private async Task SaveDataToFile()
