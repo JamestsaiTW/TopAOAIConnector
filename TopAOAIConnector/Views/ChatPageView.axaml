@@ -53,14 +53,20 @@
                 FontSize="20"
                 Text="{Binding InputText}"
                 Watermark="在這裡輸入聊天的相關文字..." />
-            <StackPanel Grid.Row="2" Margin="0,4" HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button Command="{Binding AttachCommand}">
-                    <fluenticons:SymbolIcon FontSize="20" IconVariant="Regular" Symbol="Attach" />
+            <Grid Grid.Row="2" Margin="0,4" ColumnDefinitions="Auto,*">
+                <Button Command="{Binding ExportCommand}">
+                    <fluenticons:SymbolIcon FontSize="20" IconVariant="Regular" Symbol="DataWhisker" />
                 </Button>
-                <Button Command="{Binding SendCommand}" IsDefault="True">
-                    <fluenticons:SymbolIcon FontSize="20" IconVariant="Regular" Symbol="Send" />
-                </Button>
-            </StackPanel>
+                <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
+                    <Button Command="{Binding AttachCommand}" >
+                        <fluenticons:SymbolIcon FontSize="20" IconVariant="Regular" Symbol="Attach" />
+                    </Button>
+                    <Button Command="{Binding SendCommand}" IsDefault="True">
+                        <fluenticons:SymbolIcon FontSize="20" IconVariant="Regular" Symbol="Send" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+
         </Grid>
     </Border>
 </UserControl>

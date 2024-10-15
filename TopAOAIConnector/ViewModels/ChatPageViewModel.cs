@@ -11,6 +11,8 @@ using System.IO;
 using Avalonia.Controls.Documents;
 using System.Threading.Tasks;
 using TopAOAIConnector.Models;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 namespace TopAOAIConnector.ViewModels;
 
@@ -58,7 +60,7 @@ internal partial class ChatPageViewModel : ViewModelBase
             SuggestedStartLocation = await storageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Desktop),
         });
 
-        if (resultFiles.Count <= 0) 
+        if (resultFiles.Count <= 0)
             return;
 
         await using var stream = await resultFiles[0].OpenReadAsync();
@@ -70,7 +72,7 @@ internal partial class ChatPageViewModel : ViewModelBase
         {
             lastFileName = string.Empty;
             appandText = $"{Environment.NewLine}======= Another Attach TextFile =======";
-            
+
             ChatText = $"{ChatText}{appandText}";
 
             messages.Clear();
@@ -181,6 +183,35 @@ internal partial class ChatPageViewModel : ViewModelBase
 
             selectableTextBlock.Inlines?.Add(new LineBreak());
             appandText = string.Empty;
+        }
+    }
+
+    [RelayCommand]
+    private async Task Export()
+    {
+        var storageProvider = Utilities.AttachFileHelper.StorageProvider;
+        var saveFile = await storageProvider!.SaveFilePickerAsync(new FilePickerSaveOptions()
+        {
+            FileTypeChoices = [FilePickerFileTypes.All],
+            Title = "請匯出聊天過程檔(.json)",
+            SuggestedStartLocation = await storageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Desktop),
+            DefaultExtension = "json",
+            SuggestedFileName = $"ChatRecords_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}",
+            ShowOverwritePrompt = true,
+        });
+
+        if (saveFile is not null)
+        {
+            await using var stream = await saveFile.OpenWriteAsync();
+            using var streamWriter = new StreamWriter(stream);
+
+            var aoaiMessages = new List<AoaiMessage>();
+            foreach (var message in messages)
+            {
+                aoaiMessages.Add(new AoaiMessage() { Role = message.GetType().Name, Content = message.Content[0].Text });
+            }
+            var aoaiMessagesData = System.Text.Json.JsonSerializer.Serialize(aoaiMessages, new System.Text.Json.JsonSerializerOptions() { Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) });
+            await streamWriter.WriteLineAsync(aoaiMessagesData);
         }
     }
 
