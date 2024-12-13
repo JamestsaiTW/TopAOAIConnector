@@ -1,5 +1,4 @@
-﻿using Avalonia.Collections;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -14,7 +13,7 @@ public partial class MainWindowViewModel : ViewModelBase
 #pragma warning restore CA1822 // Mark members as static
 
     [ObservableProperty]
-    private UserControl? _currentPage = new ChatPageView() { DataContext = new ChatPageViewModel()};
+    private UserControl? _currentPage = new SettingPageView() { DataContext = new SettingPageViewModel()};
 
     [ObservableProperty]
     private ListItemTemplate? _selectedListItem;

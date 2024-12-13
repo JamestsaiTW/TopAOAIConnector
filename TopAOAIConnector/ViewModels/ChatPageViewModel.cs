@@ -11,8 +11,10 @@ using System.IO;
 using Avalonia.Controls.Documents;
 using System.Threading.Tasks;
 using TopAOAIConnector.Models;
+using System.Text.Json.Nodes;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using TopAOAIConnector.Utilities;
 
 namespace TopAOAIConnector.ViewModels;
 
@@ -193,9 +195,9 @@ internal partial class ChatPageViewModel : ViewModelBase
         var saveFile = await storageProvider!.SaveFilePickerAsync(new FilePickerSaveOptions()
         {
             FileTypeChoices = [FilePickerFileTypes.All],
-            Title = "請匯出聊天過程檔(.json)",
+            Title = "請匯出聊天過程檔(.jsonl)",
             SuggestedStartLocation = await storageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Desktop),
-            DefaultExtension = "json",
+            DefaultExtension = "jsonl",
             SuggestedFileName = $"ChatRecords_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}",
             ShowOverwritePrompt = true,
         });
@@ -210,8 +212,9 @@ internal partial class ChatPageViewModel : ViewModelBase
             {
                 aoaiMessages.Add(new AoaiMessage() { Role = message.GetType().Name, Content = message.Content[0].Text });
             }
-            var aoaiMessagesData = System.Text.Json.JsonSerializer.Serialize(aoaiMessages, new System.Text.Json.JsonSerializerOptions() { Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) });
-            await streamWriter.WriteLineAsync(aoaiMessagesData);
+
+            var aoaiMessagesData = CustomJsonlHelper.ConveterToJsonl(aoaiMessages); 
+            await streamWriter.WriteAsync(aoaiMessagesData);
         }
     }
 
