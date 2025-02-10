@@ -1,5 +1,5 @@
 <UserControl
-    x:Class="TopAOAIConnector.ChatPageView"
+    x:Class="TopAOAIConnector.Views.ChatPageView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -13,7 +13,11 @@
     <Design.DataContext>
         <viewmodels:ChatPageViewModel />
     </Design.DataContext>
-    <Border Margin="10" BorderBrush="DarkGray" BorderThickness="2" CornerRadius="4">
+    <Border
+        Margin="10"
+        BorderBrush="DarkGray"
+        BorderThickness="2"
+        CornerRadius="4">
         <Grid Margin="10" RowDefinitions="*, Auto, Auto">
             <ScrollViewer Name="mainScorllViewer">
                 <Interaction.Behaviors>
@@ -21,7 +25,11 @@
                         <InvokeCommandAction Command="{Binding ScrollCommand}" CommandParameter="{Binding #mainScorllViewer}" />
                     </ValueChangedTriggerBehavior>
                 </Interaction.Behaviors>
-                <SelectableTextBlock Name="mainChatText" Margin="0,4" FontSize="20" TextWrapping="WrapWithOverflow">
+                <SelectableTextBlock
+                    Name="mainChatText"
+                    Margin="0,4"
+                    FontSize="20"
+                    TextWrapping="WrapWithOverflow">
                     Welcome to TopAOAIConnector!<LineBreak />
                     <Interaction.Behaviors>
                         <ValueChangedTriggerBehavior Binding="{Binding ChatText}">
@@ -58,7 +66,7 @@
                     <fluenticons:SymbolIcon FontSize="20" IconVariant="Regular" Symbol="DataWhisker" />
                 </Button>
                 <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
-                    <Button Command="{Binding AttachCommand}" >
+                    <Button Command="{Binding AttachCommand}">
                         <fluenticons:SymbolIcon FontSize="20" IconVariant="Regular" Symbol="Attach" />
                     </Button>
                     <Button Command="{Binding SendCommand}" IsDefault="True">

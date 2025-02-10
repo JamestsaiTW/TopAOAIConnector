@@ -1,5 +1,5 @@
 <UserControl
-    x:Class="TopAOAIConnector.SettingPageView"
+    x:Class="TopAOAIConnector.Views.SettingPageView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -14,11 +14,23 @@
     <Design.DataContext>
         <viewmodels:SettingPageViewModel />
     </Design.DataContext>
-    <Border Margin="10" BorderBrush="DarkGray" BorderThickness="2" CornerRadius="4">
+    <Border
+        Margin="10"
+        BorderBrush="DarkGray"
+        BorderThickness="2"
+        CornerRadius="4">
         <ScrollViewer Margin="6">
             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,*">
-                <TextBlock Margin="6" VerticalAlignment="Center" FontSize="20" Text="Setting for Azure OpenAI Service:" />
-                <StackPanel Grid.Column="1" Margin="6" HorizontalAlignment="Right" Orientation="Horizontal">
+                <TextBlock
+                    Margin="6"
+                    VerticalAlignment="Center"
+                    FontSize="20"
+                    Text="Setting for Azure OpenAI Service:" />
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="6"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
                     <Button Command="{Binding ClearCommand}">
                         <StackPanel>
                             <fluenticons:SymbolIcon FontSize="16" IconVariant="Regular" Symbol="Delete" />
@@ -32,7 +44,11 @@
                         </StackPanel>
                     </Button>
                 </StackPanel>
-                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" x:DataType="models:AOAISettings" DataContext="{Binding Settings}">
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    x:DataType="models:AOAISettings"
+                    DataContext="{Binding Settings}">
                     <TextBlock Margin="0,6" Text="Endpoint (端點):" />
                     <TextBox Text="{Binding Endpoint}" Watermark="請輸入 &quot;端點&quot; 資訊..." />
                     <TextBlock Margin="0,6" Text="Access Key1 (金鑰1):" />

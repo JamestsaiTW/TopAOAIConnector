@@ -21,7 +21,7 @@ internal class AoaiServiceHelper
     {
         var chatClient = Instance.GetChatClient(deployModelName);
 
-        var completionChat = await chatClient.CompleteChatAsync(chatMessage);
+        var completionChat = await chatClient.CompleteChatAsync(chatMessage, new ChatCompletionOptions() { ReasoningEffortLevel = "medium" });
 
         return completionChat;
     }

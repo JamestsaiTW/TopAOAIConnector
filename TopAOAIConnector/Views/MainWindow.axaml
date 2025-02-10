@@ -19,11 +19,7 @@
         -->
         <vm:MainWindowViewModel />
     </Design.DataContext>
-    <SplitView
-        CompactPaneLength="54"
-        DisplayMode="CompactInline"
-        IsPaneOpen="{Binding IsPaneOpen}"
-        OpenPaneLength="300">
+    <SplitView CompactPaneLength="54" DisplayMode="CompactInline" IsPaneOpen="{Binding IsPaneOpen}" OpenPaneLength="300">
         <SplitView.Pane>
             <StackPanel Margin="6" Spacing="6">
                 <Button Width="38" Command="{Binding MenuButtonCommand}">
@@ -42,8 +38,7 @@
             </StackPanel>
         </SplitView.Pane>
         <SplitView.Content>
-            <Border CornerRadius="10">
-                <!--<Border Background="#2d2d2d" CornerRadius="10">-->
+            <Border Background="#2d2d2d" CornerRadius="10">
                 <TransitioningContentControl Content="{Binding CurrentPage}" />
             </Border>
         </SplitView.Content>
